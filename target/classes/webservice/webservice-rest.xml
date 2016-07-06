@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd"> 
+     
+    <jaxrs:server address="/rest">
+        <jaxrs:serviceBeans>
+            <ref bean="restUserInfoService"/>
+        </jaxrs:serviceBeans>
+        
+        <!--jsonp跨域请求配置  -->
+         <jaxrs:providers>
+           <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"></bean> 
+           <bean class="org.apache.cxf.jaxrs.provider.jsonp.JsonpPreStreamInterceptor"></bean>
+        </jaxrs:providers>
+        <jaxrs:inInterceptors>
+            <bean class="org.apache.cxf.jaxrs.provider.jsonp.JsonpInInterceptor"></bean>
+        </jaxrs:inInterceptors>
+        <jaxrs:outInterceptors>
+            <bean class="org.apache.cxf.jaxrs.provider.jsonp.JsonpPostStreamInterceptor"></bean>
+        </jaxrs:outInterceptors> 
+        
+    </jaxrs:server>
+    
+    <bean id="restUserInfoService" class="cn.com.chengzi.framework.webservice.rest.RestUserInfoService"></bean>
+</beans>

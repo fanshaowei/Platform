@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">              
+      
+     <!-- <context:component-scan base-package="cn.com.chengzi.framework.security.filter"></context:component-scan> -->
+         
+     <security:global-method-security pre-post-annotations="enabled"></security:global-method-security>
+      
+     <!-- 静态资源不拦截 --> 
+     <security:http pattern="/**/*.js" security="none"></security:http>
+     <security:http pattern="/**/*.css" security="none"></security:http>
+     <security:http pattern="/**/*.png" security="none"></security:http>
+     <security:http pattern="/**/*.gif" security="none" ></security:http>
+     
+     <!-- 指定页面不拦截 -->     
+     <!-- <security:http pattern="/login.jsp" security="none"></security:http>  auto-config="false" use-expressions="true" -->
+     <!-- <security:http pattern="/sysUser/**" security="none"></security:http> -->    
+     
+     <security:http>               
+         <!-- <intercept-url pattern="/login/index" access="hasRole('USER')"/> /framework/views/index.jsp-->          
+         <!-- <security:intercept-url pattern="/login.jsp" access="permitAll"/>
+         <security:intercept-url pattern="/login/index" access="permitAll"/>
+          <security:intercept-url pattern="/login/index.jsp" access="permitAll"/> -->
+                           
+         <!-- 指定登陆 地址-->              
+         <security:form-login login-page="/login.jsp" login-processing-url="/j_spring_security_check"
+             password-parameter="j_password" username-parameter="j_username"
+             authentication-failure-url="/login.jsp?error=true" 
+             default-target-url="/login/index"
+             always-use-default-target="true"/>
+          
+         <!--退出  -->   
+         <security:logout logout-url="/j_spring_security_logout" logout-success-url="/login.jsp" invalidate-session="true"/>
+         
+         <!-- 登陆权限验证失败跳页面 -->
+         <security:access-denied-handler error-page="/accessDenied.jsp"/> 
+                                         
+         <security:http-basic /> 
+          
+         <!-- 设置同域名下，iframe请求不会跨域 --> 
+         <security:headers>
+             <security:frame-options policy="SAMEORIGIN" />
+	     </security:headers>
+           
+         <!--禁用csrf  4.0默认启用  disable=false (客户端post请求头必须添加 token,header) -->  
+         <security:csrf disabled="false"/>
+            
+         <!-- 防止多次登陆，第二次登陆会导致第一次会话无效 invalid-session-url="/login.jsp"-->    
+         <security:session-management invalid-session-url="/login.jsp">             
+             <security:concurrency-control max-sessions="1" error-if-maximum-exceeded="false" expired-url="/login.jsp"/>
+         </security:session-management>
+             
+         <!-- 自定义过滤器 -->    
+         <security:custom-filter ref="myFilter" before="FILTER_SECURITY_INTERCEPTOR"/>         
+     </security:http>     
+     
+     <bean id="myFilter" class="cn.com.chengzi.framework.security.filter.MyFilterSecurityInterceptor">
+         <property name="authenticationManager" ref="authenticationManager"></property>         
+         <property name="accessDecisionManager" ref="myAccessDecisionManager"></property>
+         <property name="securityMetadataSource" ref="myInvocationSecurityMetadataSourceService"></property>         
+     </bean>
+     
+     <!-- 用户登陆，会被AuthenticationProcessingFilter拦截，调用AuthenticationManager的实现，
+               而且AuthenticationManager会调用ProviderManager来获取用户验证信息 ,
+               如果验证通过后会将用户的权限信息封装一个User放到spring的全局缓存SecurityContextHolder中，以备后面访问资源时使用 -->
+     <security:authentication-manager alias="authenticationManager">
+         <!-- <security:authentication-provider  user-service-ref="myUserDetailsService" />  -->                              
+         <security:authentication-provider ref="authenticationProvider" />
+     </security:authentication-manager>
+     
+     <bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+         <property name="userDetailsService" ref="myUserDetailsService" />
+         <property name="passwordEncoder" ref="passwordEncoder" />
+         <property name="saltSource">
+			<bean class="org.springframework.security.authentication.dao.SystemWideSaltSource">
+				<property name="systemWideSalt" value="anjubao" />
+			</bean>
+		</property>                   
+     </bean>
+    
+     <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"></bean>  
+     
+     <!--在这个类中，你就可以从数据库中读入用户的密码，角色信息，是否锁定，账号是否过期等 -->
+     <bean id="myUserDetailsService" class="cn.com.chengzi.framework.security.filter.MyUserDetailsService" />
+     
+     <!--访问决策器，决定某个用户具有的角色，是否有足够的权限去访问某个资源 -->
+     <bean id="myAccessDecisionManager" class="cn.com.chengzi.framework.security.filter.MyAccessDecisionManager" />
+     
+     <!--资源源数据定义，将所有的资源和权限对应关系建立起来，即定义某一资源可以被哪些角色访问 -->
+     <bean id="myInvocationSecurityMetadataSourceService" class="cn.com.chengzi.framework.security.filter.MyInvocationSecurityMetadataSourceService">
+         <property name="antUrlPathMatcher" ref="antUrlPathMatcherBean"></property>
+        <!--  <property name="requestMappingHandlerMapping" ref="requestMappingHandlerMapping"></property> -->
+     </bean>
+     
+     <bean id="antUrlPathMatcherBean" class="cn.com.chengzi.framework.security.util.AntUrlPathMatcher"></bean> 
+    
+</beans>

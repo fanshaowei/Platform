@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!-- 全局settin配置，根据需要添加 -->
+    <!--<settings>
+         
+    	<setting name="cacheEnabled" value="true"/>
+        <setting name="localCacheScope" value="SESSION"/>
+      
+    </settings>   -->
+
+    <!-- 配置别名 -->
+    <typeAliases>        
+        <package name="cn.com.chengzi.framework.security.model"/>        
+        <package name="cn.com.chengzi.framework.security.query"/>
+        <package name="cn.com.chengzi.framework.organizer.model"/>
+        <package name="cn.com.chengzi.framework.organizer.query"/>
+        <package name="cn.com.chengzi.framework.common.query"/>
+    </typeAliases>
+
+    <!-- 配置mapper 
+            由于使用spring和mybatis的整合进行mapper扫描，这里不需要配置
+            但必须遵循 mapper.xml和mapper.java文件同名且在一个目录
+    -->
+    <mappers></mappers>
+</configuration>

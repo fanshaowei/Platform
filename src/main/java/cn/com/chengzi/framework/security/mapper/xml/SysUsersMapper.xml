@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.chengzi.framework.security.mapper.SysUsersMapper" >    
+  	<!-- 根据用户帐号查询系统用户 -->
+  	<select id="findSysUsersListByAccount" parameterType="map"  resultType="sysUsers">
+  		SELECT * FROM SYS_USERS WHERE USER_ACCOUNT = #{userAccount}  			
+  	</select>  	
+  	
+  	<!--获取用户一级菜单  -->
+  	<select id="getSysUserFolder" parameterType="simpleQueryCriteria" resultType="map">
+  	    SELECT
+		    sys_authorities.authority_id,
+		    sys_authorities.authority_name,
+		    sys_authorities.authority_url,
+		    sys_authorities.authority_flag
+		FROM sys_authorities WHERE sys_authorities.authority_id IN
+		(
+			SELECT 
+			    DISTINCT sys_authorities.parent_authority_id
+			FROM sys_users_roles  
+			INNER JOIN sys_roles ON sys_users_roles.role_id = sys_roles.role_id
+			INNER JOIN sys_role_authorities ON sys_roles.role_id=sys_role_authorities.role_id
+			INNER JOIN sys_authorities ON sys_role_authorities.authority_id = sys_authorities.authority_id
+			WHERE sys_users_roles.user_id = #{intVal1} 
+         	AND (sys_authorities.authority_type='100100' or sys_authorities.authority_type='100200') AND sys_authorities.authority_level>1 
+			AND sys_authorities.is_show='Y' AND sys_authorities.is_valid='Y' AND sys_roles.is_valid='Y'
+		) AND sys_authorities.authority_level = 1 
+		ORDER BY sys_authorities.disp_order,sys_authorities.authority_name
+  	</select>  	
+  	
+  	<!-- 根据一级菜单id获取用户权限菜单 -->
+  	<select id="getMenuByParentId" parameterType="sysAuthoritiesQueryCriteria" resultType="map">
+  	    SELECT
+		    DISTINCT sys_authorities.authority_url,sys_authorities.authority_name,sys_authorities.authority_type,
+		    sys_authorities.authority_id,sys_authorities.parent_authority_id,sys_authorities.authority_flag,
+		    sys_authorities.disp_order
+		FROM sys_authorities 
+		INNER JOIN sys_role_authorities ON sys_authorities.authority_id=sys_role_authorities.authority_id
+		INNER JOIN sys_users_roles ON sys_role_authorities.role_id = sys_users_roles.role_id
+		WHERE sys_authorities.is_valid='Y' AND sys_authorities.is_show='Y' AND sys_authorities.authority_type=100200
+		AND sys_authorities.parent_authority_id = #{parentAuthorityId}
+		AND sys_users_roles.user_id = #{userId}    		
+		ORDER BY sys_authorities.disp_order 
+  	</select>
+</mapper>

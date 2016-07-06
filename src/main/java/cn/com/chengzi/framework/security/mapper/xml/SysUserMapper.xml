@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.chengzi.framework.security.mapper.SysUserMapper" >
+    <cache />
+    
+  	<select id="findSysUserList" parameterType="sysUserQureyCriteria" resultType="sysUser">
+  		SELECT * FROM sys_user 
+  		<where>
+  		    <if test="userId!=null and userId!=0">userId = #{userId}</if>
+  		    <if test="userName!=null and userName!=''">AND userName like '%${userName}%'</if>
+  		    <if test="trueName!=null and trueName!=''">AND trueName like '%${trueName}%'</if>
+  		    <if test="province!=null and province!=''">AND province= #{province}</if>
+  		    <if test="city!=null and city!=''">AND city= #{city}</if>
+  		    <if test="district!=null and district!=''">AND district= #{district}</if>	  		    
+  		    <if test="neighborhood!=null and neighborhood!=''">AND neighborhood= #{neighborhood}</if>	  		    	  		  	  		
+	  	</where>
+	  	<if test="index!=null and pageSize!=null and pageSize!=0">
+	  	    limit #{index} , #{pageSize}
+	  	</if>	
+  	</select>
+  	
+  	<select id="findSysUserListCnt" parameterType="sysUserQureyCriteria" resultType="int">
+  		SELECT COUNT(*) FROM sys_user 
+  		<where>
+  		    <if test="userId!=null and userId!=0">userId = #{userId}</if>
+  		    <if test="userName!=null and userName!=''">AND userName like '%${userName}%'</if>
+  		    <if test="trueName!=null and trueName!=''">AND trueName like '%${trueName}%'</if>
+  		    <if test="province!=null and province!=''">AND province= #{province}</if>
+  		    <if test="city!=null and city!=''">AND city= #{city}</if>
+  		    <if test="district!=null and district!=''">AND district= #{district}</if>	  		    
+  		    <if test="neighborhood!=null and neighborhood!=''">AND neighborhood= #{neighborhood}</if>	  		    	  		  	  		
+	  	</where>	
+  	</select>
+  	  	
+    <select id="findSysUserCntById" parameterType="int" resultType="int">
+       SELECT COUNT(1) FROM sys_user WHERE userId = #{userId}
+    </select>	        
+  	
+  	<update id="updateSysUserById" parameterType="sysUser">
+  	   UPDATE sys_user SET
+  	   userName=#{userName},trueName=#{trueName},province=#{province},city=#{city},district=#{district},
+  	   enabled=#{enabled},role=#{role},neighborhood=#{neighborhood}  	   
+  	   WHERE userId=#{userId}
+  	</update>
+  	
+  	<insert id="insertSysUser" parameterType="sysUser">
+  	   INSERT INTO sys_user (userName,trueName,province,city,district,enabled,role,neighborhood) values
+  	   (#{userName},#{trueName},#{province},#{city},#{district},#{enabled},#{role},#{neighborhood})  	    
+  	</insert>
+  	
+  	<delete id="deleteSysUserById" parameterType="int">
+  	   Delete FROM sys_user WHERE userId = #{userId}
+  	</delete>
+  	  
+</mapper>

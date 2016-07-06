@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.chengzi.framework.security.mapper.SysAuthoritiesMapper" >
+    
+    <select id="findSysAuthoritiesList" resultType="sysAuthorities">
+    SELECT authority_name FROM sys_authorities;
+    </select>
+    
+    <select id="findSysAuthoritiesListByName" parameterType="sysAuthoritiesQueryCriteria" resultType="sysAuthorities">
+    SELECT * FROM sys_authorities WHERE authority_name=#{authorityName}
+    </select>
+    
+    <select id="findSysRolesAuthorities" resultType="map">
+    SELECT 
+	    sa.authority_url,sra.role_id
+	FROM sys_role_authorities sra LEFT JOIN sys_authorities sa 
+	ON sra.authority_id = sa.authority_id  
+	WHERE sa.is_valid='Y'  
+    </select>    
+    
+    <select id="findUserAuthoritiesByUseraccount" parameterType="map" resultType="map">
+     SELECT 
+	    su.user_id,su.user_name,su.user_password,
+	    sr.role_id,sr.role_name,
+	    sa.authority_id,sa.authority_name,sa.authority_type,sa.authority_url,
+	    sa.parent_authority_id,sa.authority_flag,sa.authority_level,disp_order
+	 FROM sys_users su,
+	      sys_users_roles sur,
+	      sys_roles sr,
+	      sys_authorities sa,
+	      sys_role_authorities sra
+	 WHERE  su.user_id=sur.user_id AND sur.role_id=sr.role_id AND sur.role_id=sra.role_id AND sra.authority_id=sa.authority_id 
+	 AND sa.is_valid='Y' AND sa.is_show='Y'	AND su.user_account=#{userAccount}
+    </select>
+    
+</mapper>

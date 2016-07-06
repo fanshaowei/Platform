@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd"> 
+  
+  	<import resource="classpath:META-INF/cxf/cxf.xml" />  
+      
+    <!--另一种配置方式  CXF提供的endpoint方式--> 
+    <!-- <jaxws:endpoint id="soapHello" implementor="#helloService" address="/hello" /> -->  
+    
+    <!--第一种配置方式 CXF提供的Spring命名空间  -->
+    <jaxws:server id="helloServiceServer" address="/hello">
+        <jaxws:serviceBean>
+            <ref bean="helloService"/>
+        </jaxws:serviceBean>
+    </jaxws:server> 
+    
+    <bean id="helloService" class="cn.com.chengzi.framework.webservice.soap.HelloImpl"></bean>
+</beans>
