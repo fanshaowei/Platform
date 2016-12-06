@@ -19,31 +19,38 @@
                           两个bean,是spring MVC为@Controllers分发请求所必须的。
                            并提供了：数据绑定支持，@NumberFormatannotation支持，@DateTimeFormat支持，
            @Valid支持，读写XML的支持（JAXB），读写JSON的支持（Jackson） --> 
-     <mvc:annotation-driven/>              
+     <mvc:annotation-driven>
+     <mvc:message-converters register-defaults="true">
+      <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+        <property name="supportedMediaTypes" value="text/html;charset=UTF-8"/>
+      </bean>
+    </mvc:message-converters>
+     </mvc:annotation-driven>              
      
      <!-- 配置过滤静态资源，不受拦截 (单独使用springmvc时需要配置，此项目已经security.xml文件中配置)-->                 
      <mvc:resources location="/" mapping="/**/*.css" />
      <mvc:resources location="/" mapping="/**/*.js" />
      <mvc:resources location="/" mapping="/**/*.png" />
-     <mvc:resources location="/" mapping="/**/*.gif" />  
+     <mvc:resources location="/" mapping="/**/*.gif" />
+     <mvc:resources location="/" mapping="/**/*.html" />  
      
      <!--springmvc restful跨域资源共享配置  -->
-     <mvc:cors>
+     <!-- <mvc:cors>
 	    <mvc:mapping path="/**"
 	        allowed-origins=""
 	        allowed-methods="GET, PUT"
 	        allowed-headers="Content-Type,X-Token,X-Username,accept, x-requested-with"
 	        exposed-headers="" allow-credentials="false"
 	        max-age="3600" />	   
-    </mvc:cors>  
+    </mvc:cors>  --> 
     
-    <!-- <mvc:cors>
+    <mvc:cors>
         <mvc:mapping path="/**" />
-    </mvc:cors> -->
+    </mvc:cors>
      
      <!-- 配置控制器，扫描带有@Component @Controller@Service等这些注解的类 -->     
-     <context:component-scan base-package="cn.com.chengzi.framework.*.controller"></context:component-scan>                          
-     
+     <context:component-scan base-package="cn.com.chengzi.framework.*.*"></context:component-scan>                              
+    <!--  <context:component-scan base-package="wechat.*"></context:component-scan> -->
      
      <!-- 配置视图解析器 -->
      <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -59,5 +66,9 @@
      </bean>
      
      <!-- <bean class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor"/> -->
-     
+     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="utf-8"></property>   
+        <property name="maxUploadSize" value="10485760000"></property>  
+        <property name="maxInMemorySize" value="40960"></property>  
+    </bean>
 </beans>

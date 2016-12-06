@@ -38,9 +38,11 @@ public class MyInvocationSecurityMetadataSourceService implements
 	public static Map<String, Collection<ConfigAttribute>> resourceMap = null;		 
 	public static List<?> roleAuthoritiesUrlResources = null; //将所有的角色和url的对应关系缓存起来
 	
-	//构造方法，tomcat启动时实例化一次
+	//构造方法，tomcat启动时实例化一次,存储所有资源和角色的对应关系
+	//存储所有资源和角色的对应关系的方式可以有两种：一种放于静态变量，一种放于ServletContext容器中
+	///filterInvocation.getHttpRequest().getSession().getServletContext().setAttribute("urlAuthorities");	
 	public MyInvocationSecurityMetadataSourceService(){
-		//loadResourceDefine();
+		//loadResourceDefine();		
 	}
 	
 	//加载所有url和权限（或角色）的对应关系
@@ -68,17 +70,12 @@ public class MyInvocationSecurityMetadataSourceService implements
 	{			
 		//将参数转为url
 		FilterInvocation filterInvocation = (FilterInvocation) object;
-		String url = filterInvocation.getRequestUrl();						
-		//ServletContext servletContext = filterInvocation.getHttpRequest().getSession().getServletContext();		
+		String url = filterInvocation.getRequestUrl();								
 		int firstQuestionMarkIndex = url.indexOf("?");
 		if(firstQuestionMarkIndex != -1){
 			url = url.substring(0, firstQuestionMarkIndex);
 		}
-		
-		@SuppressWarnings({ "unchecked", "unused" })
-		Map<String, Object> urlAuthorities = 
-				(Map<String,Object>)filterInvocation.getHttpRequest().getSession().getServletContext().getAttribute("urlAuthorities");				
-		
+				
 		if(roleAuthoritiesUrlResources == null){
 			log.info("-----------------------开始加载系统权限-----------------------------");
 			roleAuthoritiesUrlResources = sysAuthoritiesService.findSysRolesAuthorities();//加载系统权限						

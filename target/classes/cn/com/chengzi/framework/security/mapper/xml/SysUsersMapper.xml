@@ -28,6 +28,139 @@
 		ORDER BY sys_authorities.disp_order,sys_authorities.authority_name
   	</select>  	
   	
+  	  	<!-- 获取角色信息 -->	
+  	<select id="getSysRoles" resultType="SysRoles">
+  		SELECT
+			*
+		FROM 
+			sys_roles
+  	</select>
+  	<!-- 更新角色表 -->	
+  	<update id="updateRoleById" parameterType="SysRoles" >
+  		UPDATE sys_roles
+		SET
+			role_name=#{role_name},role_desc=#{role_desc},is_admin=#{is_admin},is_valid=#{is_valid},organizer_id=#{organizer_id}
+		WHERE
+			role_id=#{role_id}
+  	</update>
+  	 <!-- 插入角色表 -->	
+  	 <insert id="insertsysRoles" parameterType="SysRoles" >		
+		INSERT INTO 
+			sys_roles(role_name,role_desc,is_admin,is_valid,organizer_id)	
+		VALUES(#{role_name},#{role_desc},#{is_admin},#{is_valid},#{organizer_id})
+  	</insert>
+  	<!-- 删除角色表 -->	
+  	 <delete id="deleteRoleById" parameterType="int" >		
+		DELETE FROM 
+			sys_roles 
+		WHERE 
+			role_id=#{role_id}
+  	</delete>
+  	
+  	<!-- 根据角色ID获取所有权限ID -->
+  	<select id="getAuthIdById" parameterType="int" resultType="Integer">
+  		SELECT
+			sra.authority_id
+		FROM 
+			sys_role_authorities sra
+		WHERE
+			sra.role_id=#{role_id}
+  	</select>
+  	
+  	<!-- 插入权限角色表 -->
+  	<insert id="insertAuthRole">
+  	INSERT INTO
+		sys_role_authorities (role_id,authority_id)
+	VALUES
+		(#{role_id},#{authority_id})
+  	</insert>
+  	
+  	<!-- 根据ID删除权限角色表 -->
+  	<delete id="deleteAuthRole" parameterType="int">
+  	DELETE FROM
+		sys_role_authorities
+	WHERE
+		role_id=#{role_id}
+  	</delete>
+  	 	
+  	<!-- 根据权限ID获取所有权限信息 -->
+  	<select id="getAuthById" parameterType="int" resultType="SysAuth">
+  		SELECT
+			authority_id,authority_name,
+			(SELECT COUNT(*) 
+			FROM sys_authorities
+			WHERE parent_authority_id=#{authority_id}) childrenCount
+		FROM 
+			sys_authorities
+		WHERE
+			authority_id=#{authority_id}
+  	</select>
+  	
+  	<!-- 根据权限id获取所有子权限ID -->
+  	<select id="getChildAuthIdById" parameterType="int" resultType="Integer">
+  		SELECT authority_id
+		FROM sys_authorities
+		WHERE parent_authority_id=#{authority_id}
+  	</select>
+  	
+  	<!-- 根据角色id和权限id获取所有子权限ID -->
+  	<select id="getChildAuthIdByRoleId" resultType="Integer">
+		SELECT 
+			sa.authority_id
+		FROM 
+			sys_authorities sa,
+			sys_role_authorities sra
+		WHERE 
+			sa.parent_authority_id=#{authority_id} AND sra.authority_id=sa.authority_id AND sra.role_id=#{role_id}
+  	</select>
+  		
+  	<!-- 获取所有根权限信息 -->
+  	<select id="getAuth"  resultType="SysAuth">
+  		SELECT
+			sa.authority_id,sa.authority_name,sa.authority_type
+		FROM 
+			sys_authorities sa
+		WHERE
+			sa.parent_authority_id=1
+		
+  	</select>
+  	
+  	<!-- 根据父权限id获取所有子权限信息 -->
+  	<select id="getChildAuthById" resultType="SysAuth">
+  		SELECT
+			sa.authority_id,sa.authority_name,sa.authority_type
+		FROM 
+			sys_role_authorities sra,
+			sys_authorities sa
+		WHERE
+			sra.role_id=#{role_id} AND sa.authority_id=sra.authority_id
+		AND sa.parent_authority_id=#{authority_id}
+  	</select>
+  	
+  	<!-- 根据权限等级获取用户信息 -->
+  	<select id="getUsersById" parameterType="SysUsersQureyCriteria" resultType="SysUsers">
+	  	SELECT
+			su.user_id,su.user_name,su.user_account,su.organizer_id
+		FROM 
+			sys_users_roles sur,
+			sys_users su
+		WHERE
+			sur.user_id=su.user_id AND sur.role_id=#{role_id}
+		<if test="index!=null and pageSize!=null and pageSize!=0">
+	  	    limit #{index} , #{pageSize}
+	  	</if>
+  	</select>
+  	
+  	<select id="getUsersCnt" parameterType="SysUsersQureyCriteria" resultType="int">
+	  	SELECT
+			COUNT(*)
+		FROM 
+			sys_users_roles sur,
+			sys_users su
+		WHERE
+			sur.user_id=su.user_id AND sur.role_id=#{role_id}
+  	</select>
+  	
   	<!-- 根据一级菜单id获取用户权限菜单 -->
   	<select id="getMenuByParentId" parameterType="sysAuthoritiesQueryCriteria" resultType="map">
   	    SELECT
@@ -41,5 +174,42 @@
 		AND sys_authorities.parent_authority_id = #{parentAuthorityId}
 		AND sys_users_roles.user_id = #{userId}    		
 		ORDER BY sys_authorities.disp_order 
+  	</select>
+  	
+  	<!--  根据角色ID获取其它所有用户信息 -->
+  	<select id="sysUsersListByRole" parameterType="SysUsersQureyCriteria" resultType="SysUsers">
+  		SELECT 
+  			su.* 
+  		FROM 
+  			sys_users su,
+			sys_users_roles sur
+  		<where>
+  			<if test="role_id!=null and role_id!=0">su.user_id=sur.user_id AND sur.role_id!=#{role_id}</if>
+  		    <if test="user_id!=null and user_id!=0">AND su.user_id = #{user_id}</if>
+  		    <if test="user_name!=null and user_name!=''">AND su.user_name like '%${user_name}%'</if>
+  		    <if test="user_account!=null and user_account!=''">AND su.user_account like '%${user_account}%'</if>
+  		    <if test="organizer_id!=null and organizer_id!=''">AND su.organizer_id= #{organizer_id}</if>
+  		    	    	  		  	  		
+	  	</where>
+		
+	  	<if test="index!=null and pageSize!=null and pageSize!=0">
+	  	    limit #{index} , #{pageSize}
+	  	</if>	
+  	</select>
+  	
+  	<!--  根据角色ID获取其它所有用户数量 -->
+  	<select id="findSysUsersListCnt" parameterType="SysUsersQureyCriteria" resultType="int">
+  		SELECT 
+  			COUNT(*) 
+  		FROM 
+  			sys_users su,
+			sys_users_roles sur
+  		<where>
+  			<if test="role_id!=null and role_id!=0">su.user_id=sur.user_id AND sur.role_id!=#{role_id}</if>
+  		    <if test="user_id!=null and user_id!=0">AND su.user_id = #{user_id}</if>
+  		    <if test="user_name!=null and user_name!=''">AND su.user_name like '%${user_name}%'</if>
+  		    <if test="user_account!=null and user_account!=''">AND su.user_account like '%${user_account}%'</if>
+  		    <if test="organizer_id!=null and organizer_id!=''">AND su.organizer_id= #{organizer_id}</if>	    	  		  	  		
+	  	</where>	  			
   	</select>
 </mapper>

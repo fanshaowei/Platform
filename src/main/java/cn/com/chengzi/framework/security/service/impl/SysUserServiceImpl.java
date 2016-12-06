@@ -3,12 +3,14 @@ package cn.com.chengzi.framework.security.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import cn.com.chengzi.framework.security.mapper.SysUserMapper;
 import cn.com.chengzi.framework.security.model.SysUser;
 import cn.com.chengzi.framework.security.query.SysUserQureyCriteria;
 import cn.com.chengzi.framework.security.service.SysUserService;
 
+@Service("sysUserService")
 public class SysUserServiceImpl implements SysUserService {
 
 	@Autowired

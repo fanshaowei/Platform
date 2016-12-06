@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.chengzi.framework.security.mapper.SysOrgUsersMapper" >
+
+<!-- 根据组织ID获取组织信息 -->
+  	<select id="getOrgById" parameterType="int" resultType="sysOrganizer">
+  		SELECT
+			organizer_id,organizer_name,
+			(SELECT COUNT(*) 
+				FROM sys_organizer_info
+				WHERE parent_org_id=#{organizer_id}) childrenCount
+			
+		FROM 
+			sys_organizer_info
+		WHERE
+			organizer_id=#{organizer_id}
+  	</select>
+  	
+  	<!-- 根据组织id获取所有子组织ID -->
+  	<select id="getChildOrgIdById" parameterType="int" resultType="Integer">
+  		SELECT organizer_id
+		FROM sys_organizer_info
+		WHERE parent_org_id=#{organizer_id}
+  	</select>
+  		
+  	<!-- 根据组织ID获得非指定角色的所有成员 -->
+  	<select id="sysUsersListByOrg" resultType="SysUsers">
+  	
+  		SELECT * FROM sys_users
+		WHERE organizer_id=#{organizer_id} 
+		AND user_id NOT IN (select user_id FROM sys_users_roles WHERE role_id=#{role_id}) 
+  	</select>
+  	
+  	<!-- 根据组织ID获得所有成员 -->
+  	<select id="getAllUsersByOrg" parameterType="SysUsersQureyCriteria" resultType="SysUsers">
+  		SELECT
+			*
+		FROM
+			sys_users	
+		<where>
+  			<if test="organizer_id!=null and organizer_id!=0">organizer_id=#{organizer_id}</if>
+  		    <if test="user_id!=null and user_id!=0">AND user_id = #{user_id}</if>
+  		    <if test="user_name!=null and user_name!=''">AND user_name like '%${user_name}%'</if>
+  		    <if test="user_account!=null and user_account!=''">AND user_account like '%${user_account}%'</if>		    	    	  		  	  		
+	  	</where>
+	  	<if test="index!=null and pageSize!=null and pageSize!=0">
+	  	    limit #{index} , #{pageSize}
+	  	</if>
+  	</select>
+  	
+  	<!-- 根据组织ID获得成员数量 -->
+  	<select id="findSysUsersCntByOrg" parameterType="SysUsersQureyCriteria" resultType="int">
+  		SELECT
+			COUNT(*)
+		FROM
+			sys_users	
+		<where>
+  			<if test="organizer_id!=null and organizer_id!=0">organizer_id=#{organizer_id}</if>
+  		    <if test="user_id!=null and user_id!=0">AND user_id = #{user_id}</if>
+  		    <if test="user_name!=null and user_name!=''">AND user_name like '%${user_name}%'</if>
+  		    <if test="user_account!=null and user_account!=''">AND user_account like '%${user_account}%'</if>		    	    	  		  	  		
+	  	</where>
+  	</select>
+  	
+  	<!-- 添加成员到角色 -->
+  	<insert id="insertUsersToRole">
+  		INSERT INTO 
+  			sys_users_roles(user_id,role_id)
+		VALUES(#{user_id},#{role_id})
+  	</insert>
+  	
+  	<!-- 根据成员id删除对应角色 -->
+  	<delete id="deleteUsersById">
+  		DELETE FROM sys_users_roles
+		WHERE 
+			role_id=#{role_id} AND user_id=#{user_id}
+  	</delete>
+  	
+  	<!-- 更新组织成员 -->
+  	<update id="updateOrgUsersById" parameterType="SysUsers">
+  		UPDATE 
+  			sys_users 
+		SET 
+			user_name=#{user_name},user_account=#{user_account},is_valid=#{is_valid},
+			is_admin=#{is_admin},organizer_id=#{organizer_id},mobile_number=#{mobile_number},phone_number=#{phone_number}
+		WHERE
+			user_id=#{user_id}
+  	</update>
+  	
+  	<!-- 插入组织成员 -->
+  	<insert id="insertOrgUsers" parameterType="SysUsers">
+  		INSERT INTO 
+  			sys_users(user_name,user_account,is_valid,is_admin,organizer_id,mobile_number,phone_number)
+		VALUES(#{user_name},#{user_account},#{is_valid},#{is_admin},#{organizer_id},#{mobile_number},#{phone_number})
+  	</insert>
+  	
+  	<!-- 刪除组织成员 -->
+  	<delete id="deleteOrgUsersById" parameterType="int">
+  		DELETE FROM 
+  			sys_users 
+  		WHERE user_id=#{user_id}
+  	</delete>
+  	
+</mapper>

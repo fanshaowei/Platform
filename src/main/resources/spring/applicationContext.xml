@@ -49,57 +49,14 @@
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 	    <property name="basePackage" value="cn.com.chengzi.framework.**.mapper"></property>
 	    <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
-	</bean>
+	</bean>	 
 	
-	 <!--配置redis  -->
-	<!-- <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
-	    <property name="maxIdle" value="${redis.pool.maxIdle}"></property>
-	    <property name="maxTotal" value="${redis.pool.maxTotal}"></property>
-	    <property name="maxWaitMillis" value="${redis.pool.maxWaitMillis}"></property> 
-	    <property name="testOnBorrow" value="${redis.pool.testOnBorrow}"></property>
-	    <property name="testOnReturn" value="${redis.pool.testOnReturn}"></property>
-	</bean>
-	<bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
-	    p:hostName="${redis.ip}" p:port="${redis.port}" p:poolConfig-ref="jedisPoolConfig">
-	</bean>
-	<bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
-	    <property name="connectionFactory" ref="jedisConnectionFactory"></property>
-	</bean> -->
-	
-<!-- 	<import resource="classpath*:spring/applicationContext-redis.xml"/>
+    <!--
+ 	<import resource="classpath*:spring/applicationContext-redis.xml"/>
 	<import resource="classpath*:spring/applicationContext-transaction.xml"/>
 	<import resource="classpath*:spring/applicationContext-security.xml"/>
-	<import resource="classpath*:spring/applicationContext-service.xml"/> -->
-	
-	<!--HibernateFactory  -->
-    <!-- <bean id="hibernateSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>        
-        <property name="hibernateProperties">
-             <props>
-                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>
-                 <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
-                 <prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
-             </props>           
-        </property>
-        <property name="packagesToScan" value="cn.com.chengzi.**.model"></property>
-    </bean> -->
-	
-	
-	
-	 <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">  
-        <property name="dataSource" ref="dataSource" />  
-        <property name="persistenceXmlLocation" value="classpath:hibernate/persistence.xml"></property>  
-        <property name="jpaProperties">  
-            <props>  
-              <!--   <prop key="hibernate.connection.driver_class">${jdbc.driver}</prop>  -->
-                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
-                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
-                <prop key="hibernate.format_sql">${hibernate.format_sql}</prop>  
-                <prop key="javax.persistence.validation.mode">none</prop>  
-            </props>  
-        </property>  
-    </bean> 
-	
+	<import resource="classpath*:spring/applicationContext-service.xml"/> 
+	-->
 	
 	<!--引入webservice配置文件  -->
 	<import resource="classpath*:webservice/webservice-soap.xml" />

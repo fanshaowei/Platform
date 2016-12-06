@@ -177,7 +177,7 @@
 	    <div class="content">
 	        <div id="form_wrapper" class="form_wrapper">
 	            <form class="login active" name="loginForm" action="j_spring_security_check" method="post">
-	                <h3><center>安居宝后台管理</center></h3>
+	                <h3><center>后台管理</center></h3>
 	                <div>
 	                     <label>用户名:</label>
 	                     <input type="text" name="j_username">

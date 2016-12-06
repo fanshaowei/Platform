@@ -6,7 +6,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>安居宝生活运营平台</title>
+	<title>运营平台</title>
 	<%@include file="../../common/common.jsp"%>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/index/index.js"></script>	
 	<style type="text/css">
@@ -64,13 +64,13 @@
 </head>
 <body class="easyui-layout" border="false";>
     <!-- <div id="layoutdiv"  style="width:100%;height:100%; border:false;"> -->
-        <div data-options="region:'north'" style="height:70px;background-color:#6083C0;"><center><h1>安居宝生活运营平台</h2></center></div>
+        <div data-options="region:'north'" style="height:70px;background-color:#6083C0;"><center><h1>运营平台</h2></center></div>
         
         <div data-options="region:'south',split:true" style="height:50px;margin:0;padding:0;">
-            <center>版权所有：广东安居宝数码科技股份有限公司</center>
+            <center>版权所有：********</center>
         </div>              
         
-        <div id="frame_west" data-options="region:'west',split:true" title="安居宝管理后台" style="width:200px;">
+        <div id="frame_west" data-options="region:'west',split:true" title="管理后台" style="width:200px;">
             <div id="left_menu" >
             </div>            
         </div>

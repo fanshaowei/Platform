@@ -24,10 +24,10 @@
 	</bean>
 	
 	<!--hibernate事务管理  -->
-	<bean id="jpaTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+	<!-- <bean id="jpaTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory"  ref="entityManagerFactory" />
     </bean>
-    <tx:annotation-driven transaction-manager="jpaTransactionManager" />
+    <tx:annotation-driven transaction-manager="jpaTransactionManager" /> -->
 	
 	<!--通过AOP配置提供事务增强，让service包下所有Bean的所有方法拥有事务  -->
 	<!-- 通知 -->

@@ -131,7 +131,7 @@ frame.loadUserFolder = function(){
 		type:"post",
 		dataType:"json",
 		async:false,
-		contentType:"application/json;charset=utf-8",
+		//contentType:"application/json;charset=utf-8",
 		url: top.Client.CONST_PATH + "/getSysUserFolder",
 		/*beforeSend: function(request) {
             request.setRequestHeader(frame.header, frame.token);

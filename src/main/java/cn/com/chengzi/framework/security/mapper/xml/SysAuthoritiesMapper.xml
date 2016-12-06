@@ -33,4 +33,21 @@
 	 AND sa.is_valid='Y' AND sa.is_show='Y'	AND su.user_account=#{userAccount}
     </select>
     
+    <select id="findAuthUserList" resultType="SysAuthUser">
+    SELECT
+		su.*,sur.role_id
+	FROM
+		sys_users_roles sur,
+		sys_users su
+	WHERE
+		su.user_id=sur.user_id
+    </select>
+    
+    <select id="findAuthUserListCnt"  resultType="int">
+    SELECT
+		count(*)
+	FROM
+		sys_users_roles
+    </select>
+    
 </mapper>

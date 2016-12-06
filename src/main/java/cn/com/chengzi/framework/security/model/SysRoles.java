@@ -5,8 +5,8 @@ import java.io.Serializable;
 public class SysRoles implements Serializable{    
 	private static final long serialVersionUID = 5045218222580890370L;
 	private int  role_id;
-    private int  role_name;
-    private int  role_desc;
+    private String role_name;
+    private String  role_desc;
     private String is_valid;
     private String is_admin;
     private int organizer_id;
@@ -17,16 +17,16 @@ public class SysRoles implements Serializable{
 	public void setRole_id(int role_id) {
 		this.role_id = role_id;
 	}
-	public int getRole_name() {
+	public String getRole_name() {
 		return role_name;
 	}
-	public void setRole_name(int role_name) {
+	public void setRole_name(String role_name) {
 		this.role_name = role_name;
 	}
-	public int getRole_desc() {
+	public String getRole_desc() {
 		return role_desc;
 	}
-	public void setRole_desc(int role_desc) {
+	public void setRole_desc(String role_desc) {
 		this.role_desc = role_desc;
 	}
 	public String getIs_valid() {

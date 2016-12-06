@@ -14,11 +14,13 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">               
      
-     <bean id="sysUserService" class="cn.com.chengzi.framework.security.service.impl.SysUserServiceImpl"></bean>
+     <context:component-scan base-package="cn.com.chengzi" />
      
+    <!--  
+     <bean id="sysUserService" class="cn.com.chengzi.framework.security.service.impl.SysUserServiceImpl"></bean>     
      <bean id="sysUsersService" class="cn.com.chengzi.framework.security.service.impl.SysUsersServiceImpl"></bean>
-     
-     <bean id="securityUserHolderService" class="cn.com.chengzi.framework.security.service.impl.SecurityUserHolder"></bean>
-     
-     <bean id="sysAuthoritiesService" class="cn.com.chengzi.framework.security.service.impl.SysAuthoritiesServiceImpl"></bean>
+     <bean id="securityUserHolderService" class="cn.com.chengzi.framework.security.service.impl.SecurityUserHolder"></bean>     
+     <bean id="sysAuthoritiesService" class="cn.com.chengzi.framework.security.service.impl.SysAuthoritiesServiceImpl"></bean> 
+     -->
+          
 </beans>

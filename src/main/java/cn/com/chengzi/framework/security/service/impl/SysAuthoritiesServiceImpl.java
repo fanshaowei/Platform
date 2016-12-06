@@ -5,12 +5,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import cn.com.chengzi.framework.security.mapper.SysAuthoritiesMapper;
+import cn.com.chengzi.framework.security.model.SysAuthUser;
 import cn.com.chengzi.framework.security.model.SysAuthorities;
 import cn.com.chengzi.framework.security.query.SysAuthoritiesQueryCriteria;
 import cn.com.chengzi.framework.security.service.SysAuthoritiesService;
 
+@Service("sysAuthoritiesService")
 public class SysAuthoritiesServiceImpl implements SysAuthoritiesService {
 
 	@Autowired
@@ -53,4 +56,18 @@ public class SysAuthoritiesServiceImpl implements SysAuthoritiesService {
 		return returnList;
 	}
 	
+	@Override
+	public List<SysAuthorities> findAllAuthorities() {
+		return (List<SysAuthorities>) sysAuthoritiesMapper.findAllAuthorities();
+	}
+
+	@Override
+	public List<SysAuthUser> findAuthoritiesById(int user_id){
+		return (List<SysAuthUser>) sysAuthoritiesMapper.findAuthoritiesById(user_id);
+	}
+
+	@Override
+	public int findAuthUserListCnt() {
+		return sysAuthoritiesMapper.findAuthUserListCnt();
+	}
 }
