@@ -14,7 +14,11 @@ import cn.com.chengzi.framework.security.model.SysUser;
 import cn.com.chengzi.framework.security.query.SysUserQureyCriteria;
 import cn.com.chengzi.framework.security.service.SysUserService;
 
-
+/**
+ * CXF restful 接口例子，访问路径如下：http://localhost:8080/WechatApp/webservice/rest/userInfo/userCnt
+ * @author fanshaowei
+ *
+ */
 @Path("/userInfo")
 public class RestUserInfoService {
 	@Autowired
